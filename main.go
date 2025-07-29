@@ -184,6 +184,25 @@ func main() {
 
 	linter := NewLinter()
 
+	// If a file argument is provided, read the commit message from the file
+	if len(os.Args) > 1 {
+		data, err := os.ReadFile(os.Args[1])
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "::error title=commitlint::Failed to read commit message file: %v\n", err)
+			os.Exit(1)
+		}
+		commitMsg := string(data)
+		errs := linter.LintSubject(strings.TrimSpace(commitMsg))
+		if len(errs) > 0 {
+			for _, msg := range errs {
+				fmt.Printf("::error title=commit::%s | '%s'\n", msg, commitMsg)
+			}
+			os.Exit(1)
+		}
+		fmt.Println("All commit subjects comply with rules.")
+		os.Exit(0)
+	}
+
 	var rangeSpec string
 	if len(os.Args) > 2 && os.Args[1] == "--range" {
 		rangeSpec = os.Args[2]
