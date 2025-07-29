@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 )
+// test
 
 // Config holds the linter's configuration.
 type Config struct {
