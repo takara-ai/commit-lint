@@ -130,7 +130,7 @@ func contains(slice []string, item string) bool {
 
 // GetGitCommits fetches commits from the git repository.
 func GetGitCommits(rangeSpec string, limit int) ([][2]string, error) {
-	format := "%H\x00%s"
+	format := "%H|%s"
 	args := []string{"log", "--no-merges", fmt.Sprintf("--pretty=format:%s", format)}
 	if rangeSpec != "" {
 		args = append(args, rangeSpec)
@@ -157,7 +157,7 @@ func GetGitCommits(rangeSpec string, limit int) ([][2]string, error) {
 		if strings.TrimSpace(line) == "" {
 			continue
 		}
-		parts := strings.SplitN(line, "\x00", 2)
+		parts := strings.SplitN(line, "|", 2)
 		if len(parts) == 2 {
 			commits = append(commits, [2]string{strings.TrimSpace(parts[0]), strings.TrimSpace(parts[1])})
 		}
