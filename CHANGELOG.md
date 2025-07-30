@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/takara-ai/commit-lint/compare/v1.0.0...v1.0.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **tests:** checks and handles these errors ([0e9587a](https://github.com/takara-ai/commit-lint/commit/0e9587afa4d50a0f1837371277680ae335eb4428))
+
 ## 1.0.0 (2025-07-30)
 
 
