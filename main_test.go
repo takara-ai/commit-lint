@@ -45,6 +45,24 @@ func TestLintSubject(t *testing.T) {
 			config:  &Config{AllowedTypes: []string{"test"}, MaxSubjectLength: 50, RequireScope: true},
 			errors:  nil,
 		},
+		{
+			name:    "merge commit: github style",
+			subject: "Merge pull request #123 from feature/branch",
+			config:  &Config{},
+			errors:  nil,
+		},
+		{
+			name:    "merge commit: branch style",
+			subject: "Merge branch 'feature/foo'",
+			config:  &Config{},
+			errors:  nil,
+		},
+		{
+			name:    "merge commit: hash style",
+			subject: "Merge 9d7b7c932575348d7a2768fc781960128d9b16f2 into 15a00c61be9c996611064f3cb94a388cbe40c3a2",
+			config:  &Config{},
+			errors:  nil,
+		},
 		// Invalid cases
 		{
 			name:    "invalid: wrong format",
@@ -187,4 +205,4 @@ func TestGetEnvBool(t *testing.T) {
 			}
 		})
 	}
-} 
+}

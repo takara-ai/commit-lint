@@ -47,6 +47,11 @@ func NewLinter() *Linter {
 
 // LintSubject checks a single commit subject against the linter's rules.
 func (l *Linter) LintSubject(subject string) []string {
+	// Ignore merge commits (GitHub and CLI always start with "Merge ")
+	if strings.HasPrefix(subject, "Merge ") {
+		return nil
+	}
+
 	var errors []string
 	re := regexp.MustCompile(`^([a-z]+)(?:\(([a-z0-9][a-z0-9./-]*?)\))?(!)?: (.*)$`)
 	matches := re.FindStringSubmatch(subject)
