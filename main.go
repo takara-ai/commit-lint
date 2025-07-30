@@ -245,4 +245,4 @@ func main() {
 	}
 
 	fmt.Println("All commit subjects comply with rules.")
-} 
+}
