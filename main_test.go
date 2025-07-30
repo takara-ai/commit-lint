@@ -63,6 +63,12 @@ func TestLintSubject(t *testing.T) {
 			config:  &Config{},
 			errors:  nil,
 		},
+		{
+			name:    "merge commit: github pull request with branch",
+			subject: "Merge pull request #10 from takara-ai/feat/release-please",
+			config:  &Config{},
+			errors:  nil,
+		},
 		// Invalid cases
 		{
 			name:    "invalid: wrong format",
@@ -152,8 +158,16 @@ func TestReadEnvList(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			os.Setenv("TEST_ENV_VAR", tc.envValue)
-			defer os.Unsetenv("TEST_ENV_VAR")
+			err := os.Setenv("TEST_ENV_VAR", tc.envValue)
+			if err != nil {
+				t.Fatalf("failed to set env: %v", err)
+			}
+			defer func() {
+				err := os.Unsetenv("TEST_ENV_VAR")
+				if err != nil {
+					t.Fatalf("failed to unset env: %v", err)
+				}
+			}()
 
 			result := readEnvList("TEST_ENV_VAR", tc.defaultValue)
 			if !reflect.DeepEqual(result, tc.expected) {
@@ -183,6 +197,7 @@ func TestGetEnvBool(t *testing.T) {
 
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
+			var unsetErr error
 			if tc.value != "" {
 				// To test case-insensitivity, we alternate casing
 				val := tc.value
@@ -193,10 +208,21 @@ func TestGetEnvBool(t *testing.T) {
 						val = strings.ToLower(val)
 					}
 				}
-				os.Setenv("TEST_BOOL_VAR", val)
-				defer os.Unsetenv("TEST_BOOL_VAR")
+				err := os.Setenv("TEST_BOOL_VAR", val)
+				if err != nil {
+					t.Fatalf("failed to set env: %v", err)
+				}
+				defer func() {
+					unsetErr = os.Unsetenv("TEST_BOOL_VAR")
+					if unsetErr != nil {
+						t.Fatalf("failed to unset env: %v", unsetErr)
+					}
+				}()
 			} else {
-				os.Unsetenv("TEST_BOOL_VAR")
+				unsetErr = os.Unsetenv("TEST_BOOL_VAR")
+				if unsetErr != nil {
+					t.Fatalf("failed to unset env: %v", unsetErr)
+				}
 			}
 
 			result := getEnvBool("TEST_BOOL_VAR", tc.defaultValue)
